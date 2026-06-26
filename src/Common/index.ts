@@ -14,6 +14,7 @@ export { PlaceholderPage } from './ui/components/PlaceholderPage';
 export { TMDBImage } from './ui/components/TMDBImage';
 export { SectionErrorBoundary } from './ui/components/SectionErrorBoundary';
 export { MediaCard } from './ui/components/MediaCard';
+export { TrailerModal } from './ui/components/TrailerModal';
 
 
 export { useDebounce } from './ui/hooks/useDebounce';

@@ -1,5 +1,9 @@
+import { useNavigate } from 'react-router-dom';
+
 import { type MediaItem } from '../../core/types/TMDB.types';
 import { TMDBImage } from './TMDBImage';
+import { get } from 'react-hook-form';
+
 
 interface MediaCardProps {
   item: MediaItem;
@@ -14,12 +18,17 @@ export const MediaCard = ({ item, onClick }: MediaCardProps) => {
     if (item.media_type === 'tv') return 'tv';
     return 'movie';
   };
+  const navigate = useNavigate();
 
   return (
     <div 
       className="relative group cursor-pointer w-36 sm:w-44 flex-shrink-0 transition-transform hover:scale-105"
-      onClick={() => onClick?.(item.id, getCardMediaType(item))}
+      onClick={() => {
+        if(onClick) onClick(item.id, getCardMediaType(item));
+        else navigate(`/${getCardMediaType(item)}/${item.id}`);
+      }}
     >
+        
       <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-lg relative bg-gray-800">
         <TMDBImage 
           path={item.poster_path} 

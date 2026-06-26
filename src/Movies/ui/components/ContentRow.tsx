@@ -30,7 +30,6 @@ export const ContentRow = ({ title, items, status }: ContentRowProps) => {
             <MediaCard 
               key={item.id} 
               item={item} 
-              onClick={(id, type) => console.log(`Maps to /${type}/${id}`)} 
             />
           ))
         )}

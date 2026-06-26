@@ -2,8 +2,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import { PlaceholderPage } from './Common/ui/components/PlaceholderPage';
 import { LoginPage, ProtectedRoute, GuestRoute } from './Auth';
 import { ShellLayout } from './Common/ui/layouts/ShellLayout';
-import { HomePage } from './Movies';
+import { HomePage, MovieDetailPage } from './Movies';
 import { SearchPage } from './Search';
+import { TVShowDetailPage, SeasonDetail } from './TVShows';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,22 @@ export const router = createBrowserRouter([
             path: '/search',
             element: <SearchPage />,
           },
+          {
+            path: '/movie/:id',
+            element: <MovieDetailPage />,
+          },
+          {
+            path: '/tv/:id',
+            element: <TVShowDetailPage />,
+            children: [
+              // This tells React Router: "When the URL matches /tv/:id/season/:number, 
+              // render SeasonDetail inside the <Outlet /> of TVShowDetailPage"
+              {
+                path: 'season/:seasonNumber',
+                element: <SeasonDetail />,
+              }
+            ]
+            },
         ]
       }
     ]

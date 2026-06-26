@@ -1,11 +1,9 @@
 import { z } from 'zod';
 import { 
-  mediaItemSchema, 
-  createPaginatedSchema, 
-  genreListSchema, 
-  type MediaItem, 
-  type Genre 
-} from '../../core/types/TMDB.types';
+    mediaItemSchema, createPaginatedSchema, genreListSchema, 
+    movieDetailSchema, tvDetailSchema, seasonDetailSchema, // <-- Add these
+    type MediaItem, type Genre, type MovieDetail, type TVDetail, type SeasonDetail // <-- Add these
+  } from '../../core/types/TMDB.types';
 
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -26,11 +24,11 @@ async function fetchFromTMDB<T>(endpoint: string, schema: z.ZodType<T>): Promise
       // Using the Read Access Token as a Bearer token
       Authorization: `Bearer ${API_KEY}`,
     },
-  });
+    });
 
-  if (!response.ok) {
-    throw new Error(`TMDB API Error: ${response.status} ${response.statusText}`);
-  }
+    if (!response.ok) {
+        throw new Error(`TMDB API Error: ${response.status} ${response.statusText}`);
+    }
 
   const rawData = await response.json();
   
@@ -69,5 +67,17 @@ export const TMDBService = {
       `/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`, 
       mediaListSchema
     );
+  },
+  getMovieDetails: (id: string): Promise<MovieDetail> => {
+    // append_to_response bundles the cast and trailers into the single response!
+    return fetchFromTMDB(`/movie/${id}?language=en-US&append_to_response=credits,videos`, movieDetailSchema);
+  },
+
+  getTVDetails: (id: string): Promise<TVDetail> => {
+    return fetchFromTMDB(`/tv/${id}?language=en-US&append_to_response=credits,videos`, tvDetailSchema);
+  },
+
+  getSeasonDetails: (tvId: string, seasonNumber: string): Promise<SeasonDetail> => {
+    return fetchFromTMDB(`/tv/${tvId}/season/${seasonNumber}?language=en-US`, seasonDetailSchema);
   },
 };

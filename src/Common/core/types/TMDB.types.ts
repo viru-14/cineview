@@ -40,3 +40,71 @@ export const genreListSchema = z.object({
 });
 
 
+
+export const castSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    character: z.string(),
+    profile_path: z.string().nullable().optional(),
+  });
+export type CastMember = z.infer<typeof castSchema>;
+
+export const videoSchema = z.object({
+    id: z.string(),
+    key: z.string(), // The YouTube video ID
+    name: z.string(),
+    site: z.string(),
+    type: z.string(), // e.g., 'Trailer', 'Teaser'
+});
+export type Video = z.infer<typeof videoSchema>;
+
+export const seasonSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    season_number: z.number(),
+    episode_count: z.number(),
+    poster_path: z.string().nullable().optional(),
+});
+export type Season = z.infer<typeof seasonSchema>;
+
+export const episodeSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    overview: z.string().optional().nullable(),  // was: z.string()
+    episode_number: z.number(),
+    still_path: z.string().nullable().optional(),
+    air_date: z.string().nullable().optional(),
+  });
+export type Episode = z.infer<typeof episodeSchema>;
+
+// Detailed Movie Schema (includes credits and videos via append_to_response)
+export const movieDetailSchema = mediaItemSchema.extend({
+    runtime: z.number().nullable().optional(),
+    release_date: z.string().optional(),
+    genres: z.array(genreSchema).optional(), // Detail endpoints return full genre objects, not just IDs
+    credits: z.object({ cast: z.array(castSchema) }).optional(),
+    videos: z.object({ results: z.array(videoSchema) }).optional(),
+});
+export type MovieDetail = z.infer<typeof movieDetailSchema>;
+
+// Detailed TV Schema
+export const tvDetailSchema = mediaItemSchema.extend({
+    first_air_date: z.string().optional(),
+    number_of_seasons: z.number().optional(),
+    genres: z.array(genreSchema).optional(),
+    seasons: z.array(seasonSchema).optional(),
+    credits: z.object({ cast: z.array(castSchema) }).optional(),
+    videos: z.object({ results: z.array(videoSchema) }).optional(),
+});
+export type TVDetail = z.infer<typeof tvDetailSchema>;
+
+// Detailed Season Schema (fetched separately when clicking a season)
+export const seasonDetailSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    season_number: z.number(),
+    overview: z.string().optional(),
+    poster_path: z.string().nullable().optional(),
+    episodes: z.array(episodeSchema),
+  });
+export type SeasonDetail = z.infer<typeof seasonDetailSchema>;
