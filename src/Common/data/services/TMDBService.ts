@@ -48,7 +48,7 @@ const getTMDBLanguage = () => {
 
 export const TMDBService = {
   getTrending: (timeWindow: 'day' | 'week' = 'day'): Promise<{ results: MediaItem[] }> => {
-    return fetchFromTMDB(`/trending/all/${timeWindow}?language={getTMDBLanguage()}`, mediaListSchema);
+    return fetchFromTMDB(`/trending/all/${timeWindow}?language=${getTMDBLanguage()}`, mediaListSchema);
   },
 
   getPopularMovies: (): Promise<{ results: MediaItem[] }> => {

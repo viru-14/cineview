@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TMDBService, type MediaItem, type Genre, type  Status } from '../../../Common';
+import { preferencesStore } from '../../../Preferences';
+
 
 interface RowState {
   data: MediaItem[];
@@ -64,7 +66,7 @@ export const useHomeController = () => {
     fetchTrending();
     fetchPopular();
     fetchTopRated();
-  }, []); // Empty dependency array means this runs exactly once on mount
+  }, [preferencesStore.language]); // Empty dependency array means this runs exactly once on mount
 
   // Helper to filter items based on the selected genre
   const filterByGenre = (items: MediaItem[]) => {
