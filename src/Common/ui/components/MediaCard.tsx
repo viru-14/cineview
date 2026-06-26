@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { type MediaItem } from '../../core/types/TMDB.types';
 import { TMDBImage } from './TMDBImage';
-import { get } from 'react-hook-form';
+
 
 
 interface MediaCardProps {
@@ -28,7 +28,7 @@ export const MediaCard = ({ item, onClick }: MediaCardProps) => {
         else navigate(`/${getCardMediaType(item)}/${item.id}`);
       }}
     >
-        
+
       <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-lg relative bg-gray-800">
         <TMDBImage 
           path={item.poster_path} 

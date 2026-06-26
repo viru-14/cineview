@@ -1,4 +1,4 @@
-import { useParams, Link, NavLink, Outlet } from 'react-router-dom';
+import { useParams, NavLink, Outlet } from 'react-router-dom';
 import { useTVDetailController } from '../controllers/useTVDetailController';
 import { TMDBImage, TrailerModal, SectionErrorBoundary } from '../../../Common';
 
