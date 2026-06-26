@@ -2,6 +2,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import { PlaceholderPage } from './Common/ui/components/PlaceholderPage';
 import { LoginPage, ProtectedRoute, GuestRoute } from './Auth';
 import { ShellLayout } from './Common/ui/layouts/ShellLayout';
+import { HomePage } from './Movies';
+import { SearchPage } from './Search';
 
 export const router = createBrowserRouter([
   {
@@ -15,9 +17,12 @@ export const router = createBrowserRouter([
           {
             // 3. The actual pages
             path: '/',
-            element: <PlaceholderPage title="Home Page (Coming Soon)" />,
+            element: <HomePage />,
           },
-          // Future routes like /movie/:id, /search, etc. will go here!
+          {
+            path: '/search',
+            element: <SearchPage />,
+          },
         ]
       }
     ]
@@ -33,7 +38,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  
+
   {
     path: '*',
     element: <PlaceholderPage title="404 - Not Found" />,

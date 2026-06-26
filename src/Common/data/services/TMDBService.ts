@@ -1,0 +1,73 @@
+import { z } from 'zod';
+import { 
+  mediaItemSchema, 
+  createPaginatedSchema, 
+  genreListSchema, 
+  type MediaItem, 
+  type Genre 
+} from '../../core/types/TMDB.types';
+
+const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+
+// Create a configured paginated schema specifically for MediaItems
+const mediaListSchema = createPaginatedSchema(mediaItemSchema);
+
+/**
+ * Internal helper to handle the HTTP fetch and Zod parsing
+ */
+async function fetchFromTMDB<T>(endpoint: string, schema: z.ZodType<T>): Promise<T> {
+  const url = `${BASE_URL}${endpoint}`;
+  
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      // Using the Read Access Token as a Bearer token
+      Authorization: `Bearer ${API_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`TMDB API Error: ${response.status} ${response.statusText}`);
+  }
+
+  const rawData = await response.json();
+  
+  // This is the moat! If the data is malformed, it throws an error right here,
+  // preventing bad data from ever reaching our React components.
+  return schema.parse(rawData);
+}
+
+/**
+ * The public API surface for TMDB operations
+ */
+export const TMDBService = {
+  getTrending: (timeWindow: 'day' | 'week' = 'day'): Promise<{ results: MediaItem[] }> => {
+    return fetchFromTMDB(`/trending/all/${timeWindow}?language=en-US`, mediaListSchema);
+  },
+
+  getPopularMovies: (): Promise<{ results: MediaItem[] }> => {
+    return fetchFromTMDB('/movie/popular?language=en-US&page=1', mediaListSchema);
+  },
+
+  getTopRatedMovies: (): Promise<{ results: MediaItem[] }> => {
+    return fetchFromTMDB('/movie/top_rated?language=en-US&page=1', mediaListSchema);
+  },
+
+  getUpcomingMovies: (): Promise<{ results: MediaItem[] }> => {
+    return fetchFromTMDB('/movie/upcoming?language=en-US&page=1', mediaListSchema);
+  },
+
+  getMovieGenres: async (): Promise<Genre[]> => {
+    const data = await fetchFromTMDB('/genre/movie/list?language=en-US', genreListSchema);
+    return data.genres;
+  },
+  searchMulti: (query: string): Promise<{ results: MediaItem[] }> => {
+    // We encode the query to handle spaces and special characters safely
+    return fetchFromTMDB(
+      `/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`, 
+      mediaListSchema
+    );
+  },
+};

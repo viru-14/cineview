@@ -1,9 +1,19 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { SessionService } from '../../../Auth';
+import { useState } from 'react';
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const session = SessionService.getSession();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery(''); // Clear the navbar input after redirecting
+    }
+  };
 
   const handleLogout = () => {
     SessionService.clearSession();
@@ -19,9 +29,15 @@ export const Navbar = () => {
 
       {/* Middle: Global Search Placeholder (Milestone 3) */}
       <div className="hidden md:flex flex-1 max-w-md mx-6">
-        <div className="w-full bg-gray-800 rounded-full h-9 flex items-center px-4 text-sm text-gray-500 border border-gray-700">
-          Search movies, TV shows... (Coming Soon)
-        </div>
+        <form onSubmit={handleSearchSubmit} className="w-full">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search movies, TV shows..."
+            className="w-full bg-gray-800 rounded-full h-9 px-4 text-sm text-white border border-gray-700 focus:outline-none focus:border-blue-500"
+          />
+        </form>
       </div>
 
       {/* Right Side: Actions & Profile */}
