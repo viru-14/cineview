@@ -4,7 +4,7 @@ import { useState } from 'react';
 const IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
 
 interface TMDBImageProps {
-  path: string | null;
+  path: string | null | undefined;
   type: 'poster' | 'backdrop' | 'profile';
   alt: string;
   className?: string;

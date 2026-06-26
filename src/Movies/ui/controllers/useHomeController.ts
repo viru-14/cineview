@@ -69,7 +69,7 @@ export const useHomeController = () => {
   // Helper to filter items based on the selected genre
   const filterByGenre = (items: MediaItem[]) => {
     if (activeGenreId === null) return items;
-    return items.filter(item => item.genre_ids.includes(activeGenreId));
+    return items.filter(item => (item.genre_ids ?? []).includes(activeGenreId));
   };
 
   return {
