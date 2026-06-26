@@ -1,21 +1,23 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import { preferencesStore } from '../../Preferences/data/stores/PreferencesStore';
+
+// Import our dictionaries
+import enTranslations from './locales/en.json';
+import esTranslations from './locales/es.json';
 
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
-      en: {
-        translation: {
-          welcome: "Welcome to CineView"
-        }
-      }
+      en: { translation: enTranslations },
+      es: { translation: esTranslations }
     },
+    // Initialize with the language saved in localStorage via MobX
+    lng: preferencesStore.language,
     fallbackLng: 'en',
     interpolation: {
-      escapeValue: false, // React already safeguards from XSS
+      escapeValue: false, // React protects from XSS natively
     },
   });
 

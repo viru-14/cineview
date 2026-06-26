@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { preferencesStore } from '../../../Preferences';
 import { 
     mediaItemSchema, createPaginatedSchema, genreListSchema, 
     movieDetailSchema, tvDetailSchema, seasonDetailSchema, // <-- Add these
@@ -40,44 +41,49 @@ async function fetchFromTMDB<T>(endpoint: string, schema: z.ZodType<T>): Promise
 /**
  * The public API surface for TMDB operations
  */
+
+const getTMDBLanguage = () => {
+    return preferencesStore.language === 'es' ? 'es-ES' : 'en-US';
+  };
+
 export const TMDBService = {
   getTrending: (timeWindow: 'day' | 'week' = 'day'): Promise<{ results: MediaItem[] }> => {
-    return fetchFromTMDB(`/trending/all/${timeWindow}?language=en-US`, mediaListSchema);
+    return fetchFromTMDB(`/trending/all/${timeWindow}?language={getTMDBLanguage()}`, mediaListSchema);
   },
 
   getPopularMovies: (): Promise<{ results: MediaItem[] }> => {
-    return fetchFromTMDB('/movie/popular?language=en-US&page=1', mediaListSchema);
+    return fetchFromTMDB(`/movie/popular?language=${getTMDBLanguage()}&page=1`, mediaListSchema);
   },
 
   getTopRatedMovies: (): Promise<{ results: MediaItem[] }> => {
-    return fetchFromTMDB('/movie/top_rated?language=en-US&page=1', mediaListSchema);
+    return fetchFromTMDB(`/movie/top_rated?language=${getTMDBLanguage()}&page=1`, mediaListSchema);
   },
 
   getUpcomingMovies: (): Promise<{ results: MediaItem[] }> => {
-    return fetchFromTMDB('/movie/upcoming?language=en-US&page=1', mediaListSchema);
+    return fetchFromTMDB(`/movie/upcoming?language=${getTMDBLanguage()}&page=1`, mediaListSchema);
   },
 
   getMovieGenres: async (): Promise<Genre[]> => {
-    const data = await fetchFromTMDB('/genre/movie/list?language=en-US', genreListSchema);
+    const data = await fetchFromTMDB(`/genre/movie/list?language=${getTMDBLanguage()}`, genreListSchema);
     return data.genres;
   },
   searchMulti: (query: string): Promise<{ results: MediaItem[] }> => {
     // We encode the query to handle spaces and special characters safely
     return fetchFromTMDB(
-      `/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`, 
+      `/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=${getTMDBLanguage()}&page=1`, 
       mediaListSchema
     );
   },
   getMovieDetails: (id: string): Promise<MovieDetail> => {
     // append_to_response bundles the cast and trailers into the single response!
-    return fetchFromTMDB(`/movie/${id}?language=en-US&append_to_response=credits,videos`, movieDetailSchema);
+    return fetchFromTMDB(`/movie/${id}?language=${getTMDBLanguage()}&append_to_response=credits,videos`, movieDetailSchema);
   },
 
   getTVDetails: (id: string): Promise<TVDetail> => {
-    return fetchFromTMDB(`/tv/${id}?language=en-US&append_to_response=credits,videos`, tvDetailSchema);
+    return fetchFromTMDB(`/tv/${id}?language=${getTMDBLanguage()}&append_to_response=credits,videos`, tvDetailSchema);
   },
 
   getSeasonDetails: (tvId: string, seasonNumber: string): Promise<SeasonDetail> => {
-    return fetchFromTMDB(`/tv/${tvId}/season/${seasonNumber}?language=en-US`, seasonDetailSchema);
+    return fetchFromTMDB(`/tv/${tvId}/season/${seasonNumber}?language=${getTMDBLanguage()}`, seasonDetailSchema);
   },
 };

@@ -1,0 +1,33 @@
+{
+    "navbar": {
+      "searchPlaceholder": "Buscar películas, series...",
+      "logout": "Cerrar sesión",
+      "user": "Usuario"
+    },
+    "home": {
+      "trending": "Tendencias de hoy",
+      "popular": "Películas populares",
+      "topRated": "Mejor valoradas",
+      "allGenres": "Todos",
+      "playTrailer": "Ver tráiler",
+      "addToWatchlist": "Añadir a mi lista"
+    },
+    "search": {
+      "placeholder": "Buscar películas, series, personas...",
+      "searching": "Buscando en TMDB...",
+      "noResults": "No se encontraron resultados para \"{{query}}\".",
+      "recent": "Búsquedas recientes",
+      "clear": "Borrar",
+      "movies": "Películas",
+      "tvShows": "Series",
+      "people": "Personas"
+    },
+    "settings": {
+      "title": "Preferencias",
+      "language": "Idioma",
+      "theme": "Tema",
+      "region": "Región",
+      "light": "Claro",
+      "dark": "Oscuro"
+    }
+  }

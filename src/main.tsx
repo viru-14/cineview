@@ -1,16 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
+import { reaction } from 'mobx';
 import { router } from './router';
+import { preferencesStore } from './Preferences';
 
-// Initialize i18n before the app renders
-import './Common/core/i18n';
+import i18n from './Common/core/i18n' 
 import './Common/ui/styles/global.css';
+
+reaction(
+  () => preferencesStore.language,
+  (newLanguage) => {
+    i18n.changeLanguage(newLanguage);
+  }
+);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <div className="bg-gray-900 min-h-screen">
-      <RouterProvider router={router} />
-    </div>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );

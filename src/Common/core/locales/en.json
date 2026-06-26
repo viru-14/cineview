@@ -1,0 +1,33 @@
+{
+    "navbar": {
+      "searchPlaceholder": "Search movies, TV shows...",
+      "logout": "Logout",
+      "user": "User"
+    },
+    "home": {
+      "trending": "Trending Now",
+      "popular": "Popular Movies",
+      "topRated": "Top Rated",
+      "allGenres": "All",
+      "playTrailer": "Play Trailer",
+      "addToWatchlist": "Add to Watchlist"
+    },
+    "search": {
+      "placeholder": "Search for movies, TV shows, people...",
+      "searching": "Searching TMDB...",
+      "noResults": "No results found for \"{{query}}\".",
+      "recent": "Recent Searches",
+      "clear": "Clear",
+      "movies": "Movies",
+      "tvShows": "TV Shows",
+      "people": "People"
+    },
+    "settings": {
+      "title": "Preferences",
+      "language": "Language",
+      "theme": "Theme",
+      "region": "Region",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  }

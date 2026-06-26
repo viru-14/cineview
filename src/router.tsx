@@ -5,6 +5,7 @@ import { ShellLayout } from './Common/ui/layouts/ShellLayout';
 import { HomePage, MovieDetailPage } from './Movies';
 import { SearchPage } from './Search';
 import { TVShowDetailPage, SeasonDetail } from './TVShows';
+import { SettingsPage } from './Preferences';
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
               }
             ]
             },
+            {
+                path: '/settings',
+                element: <SettingsPage />,
+              },
         ]
       }
     ]
