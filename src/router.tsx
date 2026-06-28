@@ -6,19 +6,20 @@ import { HomePage, MovieDetailPage } from './Movies';
 import { SearchPage } from './Search';
 import { TVShowDetailPage, SeasonDetail } from './TVShows';
 import { SettingsPage } from './Preferences';
-import { WatchlistPage } from './Collection';
+import {
+  WatchlistPage,
+  CollectionsPage,
+  CollectionDetailPage,
+} from './Collection';
 
 export const router = createBrowserRouter([
   {
-    // 1. The outermost layer for protected routes
     element: <ProtectedRoute />,
     children: [
       {
-        // 2. The layout shell that wraps all protected pages
         element: <ShellLayout />,
         children: [
           {
-            // 3. The actual pages
             path: '/',
             element: <HomePage />,
           },
@@ -34,25 +35,31 @@ export const router = createBrowserRouter([
             path: '/tv/:id',
             element: <TVShowDetailPage />,
             children: [
-              // This tells React Router: "When the URL matches /tv/:id/season/:number, 
-              // render SeasonDetail inside the <Outlet /> of TVShowDetailPage"
               {
                 path: 'season/:seasonNumber',
                 element: <SeasonDetail />,
-              }
-            ]
-            },
-            {
-                path: '/settings',
-                element: <SettingsPage />,
-            },
-            {
-                path: '/watchlist',
-                element: <WatchlistPage />,
-            },
-        ]
-      }
-    ]
+              },
+            ],
+          },
+          {
+            path: '/settings',
+            element: <SettingsPage />,
+          },
+          {
+            path: '/watchlist',
+            element: <WatchlistPage />,
+          },
+          {
+            path: '/collections',
+            element: <CollectionsPage />,
+          },
+          {
+            path: '/collections/:id',
+            element: <CollectionDetailPage />,
+          },
+        ],
+      },
+    ],
   },
 
   {
@@ -69,5 +76,5 @@ export const router = createBrowserRouter([
   {
     path: '*',
     element: <PlaceholderPage title="404 - Not Found" />,
-  }
+  },
 ]);

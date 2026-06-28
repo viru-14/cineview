@@ -53,6 +53,13 @@ export const Navbar = observer(() => {
             {session?.username || t('user')}
           </span>
 
+          <Link
+            to="/collections"
+            className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors uppercase"
+          >
+            Collections
+          </Link>
+
           <WatchlistBadge />
 
           <Link
