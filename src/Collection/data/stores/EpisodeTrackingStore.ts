@@ -3,8 +3,13 @@ import { type EpisodeTrackingData, episodeTrackingSchema } from '../../core/type
 
 const STORAGE_KEY = 'cineview_episode_tracking';
 
+export type ProgressStats = {
+  watched: number;
+  total: number;
+  percent: number;
+};
+
 class EpisodeTrackingStore {
-  // Our reactive dictionary state
   watchedEpisodes: EpisodeTrackingData = {};
 
   constructor() {
@@ -12,59 +17,99 @@ class EpisodeTrackingStore {
     this.hydrate();
   }
 
-  // --- COMPUTED VALUES ---
-  
-  // Quick lookup to see if a specific episode is checked
+  getWatchedEpisodeIds = (tvId: string | number): number[] => {
+    return this.watchedEpisodes[String(tvId)] ?? [];
+  };
+
   isEpisodeWatched = (tvId: string | number, episodeId: number): boolean => {
-    const showIdStr = String(tvId);
-    const showEpisodes = this.watchedEpisodes[showIdStr];
-    
-    if (!showEpisodes) return false;
-    return showEpisodes.includes(episodeId);
+    return this.getWatchedEpisodeIds(tvId).includes(episodeId);
   };
 
-  // Useful for displaying progress bars later (e.g., "12 episodes watched")
   getWatchedCountForShow = (tvId: string | number): number => {
-    const showIdStr = String(tvId);
-    return this.watchedEpisodes[showIdStr]?.length || 0;
+    return this.getWatchedEpisodeIds(tvId).length;
   };
 
-  // --- ACTIONS ---
+  getWatchedCountInList = (tvId: string | number, episodeIds: number[]): number => {
+    const watchedSet = new Set(this.getWatchedEpisodeIds(tvId));
+    return episodeIds.filter((id) => watchedSet.has(id)).length;
+  };
+
+  getSeasonProgress = (tvId: string | number, episodes: { id: number }[]): ProgressStats => {
+    const total = episodes.length;
+    const watched = this.getWatchedCountInList(
+      tvId,
+      episodes.map((episode) => episode.id)
+    );
+
+    return {
+      watched,
+      total,
+      percent: total === 0 ? 0 : Math.round((watched / total) * 100),
+    };
+  };
+
+  getShowProgress = (
+    tvId: string | number,
+    seasons: { season_number: number; episode_count: number }[]
+  ): ProgressStats => {
+    const total = seasons
+      .filter((season) => season.season_number > 0)
+      .reduce((sum, season) => sum + season.episode_count, 0);
+
+    const watched = Math.min(this.getWatchedCountForShow(tvId), total);
+
+    return {
+      watched,
+      total,
+      percent: total === 0 ? 0 : Math.round((watched / total) * 100),
+    };
+  };
 
   toggleEpisode = (tvId: string | number, episodeId: number) => {
     const showIdStr = String(tvId);
-    
-    // Initialize the array if this is the first episode checked for this show
-    if (!this.watchedEpisodes[showIdStr]) {
-      this.watchedEpisodes[showIdStr] = [];
-    }
+    const current = this.getWatchedEpisodeIds(tvId);
+    const next = current.includes(episodeId)
+      ? current.filter((id) => id !== episodeId)
+      : [...current, episodeId];
 
-    const showEpisodes = this.watchedEpisodes[showIdStr];
-    const episodeIndex = showEpisodes.indexOf(episodeId);
+    this.updateShowEpisodes(showIdStr, next);
+  };
 
-    if (episodeIndex > -1) {
-      // If it exists, remove it (uncheck)
-      showEpisodes.splice(episodeIndex, 1);
+  setSeasonEpisodesWatched = (
+    tvId: string | number,
+    episodeIds: number[],
+    watched: boolean
+  ) => {
+    const showIdStr = String(tvId);
+    const current = new Set(this.getWatchedEpisodeIds(tvId));
+
+    if (watched) {
+      episodeIds.forEach((id) => current.add(id));
     } else {
-      // If it doesn't exist, add it (check)
-      showEpisodes.push(episodeId);
+      episodeIds.forEach((id) => current.delete(id));
     }
 
-    // Clean up empty arrays to keep localStorage lean
-    if (showEpisodes.length === 0) {
-      delete this.watchedEpisodes[showIdStr];
+    this.updateShowEpisodes(showIdStr, Array.from(current));
+  };
+
+  private updateShowEpisodes = (showIdStr: string, episodeIds: number[]) => {
+    if (episodeIds.length === 0) {
+      const { [showIdStr]: _removed, ...rest } = this.watchedEpisodes;
+      this.watchedEpisodes = rest;
+    } else {
+      this.watchedEpisodes = {
+        ...this.watchedEpisodes,
+        [showIdStr]: episodeIds,
+      };
     }
 
     this.saveToStorage();
   };
 
-  // --- PERSISTENCE ---
-
   private hydrate = () => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        // Run the raw JSON through our Zod dictionary schema
         this.watchedEpisodes = episodeTrackingSchema.parse(JSON.parse(stored));
       }
     } catch (error) {

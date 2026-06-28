@@ -12,3 +12,8 @@ export { collectionsStore } from './data/stores/CollectionsStore';
 export { AddToCollectionModal } from './ui/components/AddToCollectionModal';
 export { CollectionsPage } from './ui/pages/CollectionsPage';
 export { CollectionDetailPage } from './ui/pages/CollectionDetailPage';
+
+
+export { ProgressBar } from './ui/components/ProgressBar';
+export { ShowProgressSummary } from './ui/components/ShowProgressSummary';
+export { SeasonProgressSummary } from './ui/components/SeasonProgressSummary';

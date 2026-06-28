@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, NavLink, Outlet } from 'react-router-dom';
 import { useTVDetailController } from '../controllers/useTVDetailController';
 import { TMDBImage, TrailerModal, SectionErrorBoundary, type MediaItem } from '../../../Common';
-import { WatchlistToggle, AddToCollectionModal } from '../../../Collection';
+import { WatchlistToggle, AddToCollectionModal, ShowProgressSummary } from '../../../Collection';
 
 export const TVShowDetailPage = () => {
   const { id } = useParams();
@@ -35,7 +35,6 @@ export const TVShowDetailPage = () => {
         onClose={() => setIsCollectionModalOpen(false)}
       />
 
-      {/* Hero Section */}
       <div className="relative w-full h-[60vh] min-h-[500px]">
         <div className="absolute inset-0 z-0 opacity-30">
           <TMDBImage
@@ -93,9 +92,12 @@ export const TVShowDetailPage = () => {
         </div>
       </div>
 
-      {/* Seasons & Episodes Section */}
       <div className="container mx-auto px-6 mt-12">
         <h2 className="text-2xl font-bold mb-6 border-b border-gray-800 pb-2">Seasons</h2>
+
+        {id && standardSeasons.length > 0 && (
+          <ShowProgressSummary tvId={id} seasons={standardSeasons} />
+        )}
 
         <div className="flex overflow-x-auto gap-3 pb-4 no-scrollbar">
           {standardSeasons.map((season) => (
