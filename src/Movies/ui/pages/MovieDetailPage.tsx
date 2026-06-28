@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useMovieDetailController } from '../controllers/useMovieDetailController';
 import { TMDBImage, TrailerModal, SectionErrorBoundary } from '../../../Common';
+import { WatchlistToggle } from '../../../Collection';
 
 export const MovieDetailPage = () => {
   const { id } = useParams();
@@ -73,12 +74,7 @@ export const MovieDetailPage = () => {
                   ▶ Play Trailer
                 </button>
               )}
-              <button 
-                onClick={() => alert('Watchlist coming in M5!')}
-                className="bg-gray-800 text-white px-8 py-3 rounded hover:bg-gray-700 font-bold border border-gray-600 transition"
-              >
-                + Add to Watchlist
-              </button>
+              <WatchlistToggle item={movie} variant="button" />
             </div>
           </div>
         </div>

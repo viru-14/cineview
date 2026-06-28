@@ -1,6 +1,7 @@
 import { useParams, NavLink, Outlet } from 'react-router-dom';
 import { useTVDetailController } from '../controllers/useTVDetailController';
-import { TMDBImage, TrailerModal, SectionErrorBoundary } from '../../../Common';
+import { TMDBImage, TrailerModal, SectionErrorBoundary, type MediaItem } from '../../../Common';
+import { WatchlistToggle } from '../../../Collection';
 
 export const TVShowDetailPage = () => {
   const { id } = useParams();
@@ -40,7 +41,7 @@ export const TVShowDetailPage = () => {
               {trailerKey && (
                 <button onClick={() => setIsTrailerOpen(true)} className="bg-white text-black px-8 py-3 rounded font-bold hover:bg-gray-200 transition">▶ Play Trailer</button>
               )}
-              <button onClick={() => alert('Watchlist coming in M5!')} className="bg-gray-800 text-white px-8 py-3 rounded font-bold hover:bg-gray-700 transition">+ Add to Watchlist</button>
+              <WatchlistToggle item={show as MediaItem} variant="button" />
             </div>
           </div>
         </div>

@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; // <-- Import translation hook
-import { observer } from 'mobx-react-lite'; // <-- Import observer
+import { useTranslation } from 'react-i18next';
+import { observer } from 'mobx-react-lite';
 import { SessionService } from '../../../Auth';
 import { preferencesStore } from '../../../Preferences';
+import { WatchlistBadge } from '../../../Collection';
 
-// Wrap in observer so the language indicator updates reactively
 export const Navbar = observer(() => {
   const navigate = useNavigate();
-  const { t } = useTranslation('navbar'); // Use the 'navbar' namespace
+  const { t } = useTranslation('navbar');
   const session = SessionService.getSession();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -37,33 +37,36 @@ export const Navbar = observer(() => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('searchPlaceholder')} // <-- Translated text!
+            placeholder={t('searchPlaceholder')}
             className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-9 px-4 text-sm text-black dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-blue-500 transition-colors"
           />
         </form>
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Dynamic Language Indicator */}
         <div className="hidden sm:block text-sm font-bold text-gray-500 dark:text-gray-400 uppercase">
           {preferencesStore.language}
         </div>
-        
+
         <div className="flex items-center gap-3 border-l border-gray-300 dark:border-gray-700 pl-4 transition-colors">
           <span className="text-sm text-gray-700 dark:text-gray-300 hidden sm:block">
             {session?.username || t('user')}
           </span>
-          
-          {/* Link to Settings Page */}
-          <Link to="/settings" className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold hover:ring-2 hover:ring-blue-400 transition-all">
+
+          <WatchlistBadge />
+
+          <Link
+            to="/settings"
+            className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold hover:ring-2 hover:ring-blue-400 transition-all"
+          >
             {session?.username?.charAt(0).toUpperCase() || 'U'}
           </Link>
-          
-          <button 
+
+          <button
             onClick={handleLogout}
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors ml-2"
           >
-            {t('logout')} {/* <-- Translated text! */}
+            {t('logout')}
           </button>
         </div>
       </div>

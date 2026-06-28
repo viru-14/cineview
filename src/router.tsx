@@ -6,6 +6,7 @@ import { HomePage, MovieDetailPage } from './Movies';
 import { SearchPage } from './Search';
 import { TVShowDetailPage, SeasonDetail } from './TVShows';
 import { SettingsPage } from './Preferences';
+import { WatchlistPage } from './Collection';
 
 export const router = createBrowserRouter([
   {
@@ -44,7 +45,11 @@ export const router = createBrowserRouter([
             {
                 path: '/settings',
                 element: <SettingsPage />,
-              },
+            },
+            {
+                path: '/watchlist',
+                element: <WatchlistPage />,
+            },
         ]
       }
     ]
